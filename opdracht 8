@@ -1,1 +1,91 @@
+#include <IRremote.h>
+// pinnen voor infrarood en led
+const int irPin = 8;
+const int ledPins[] = {7, 6, 5, 4};
+int knipperTimes[] = {500, 500, 0, 0};
+int lastTime = 0;
+int currentLed = 0;
+int knippert = 2;
+int gekoppeld = 0;
+//buttons instellen afstandbediening
+long Buttons[] = {16738455, 16724175, 16718055, 16743045, 16716015, 16726215, 16734885, 16734885, 16730805, 16732845};
+int num_0 = 0xFF6897;
+#define  NUM1 0xFF30CF
 
+unsigned long lastTimes[] = {0, 0, 0, 0};
+
+int ledStatus[] = {LOW, LOW, LOW, LOW};
+int led = LOW;
+IRrecv irrecv(irPin);
+decode_results results;
+
+void setup()
+{
+  Serial.begin(9600);
+  irrecv.enableIRIn();
+  for(int i : ledPins) {
+    pinMode(i, OUTPUT);
+  }
+  pinMode(3, OUTPUT);
+}
+
+void loop(){
+  if(millis() - lastTime >= 100) {                                    
+    lastTime = millis();                                              
+    if(irrecv.decode(&results)) {                                     
+      irrecv.resume();                                                
+      if(gekoppeld < 10) {                                            
+        Serial.println(results.value);                                
+        if(results.value <=20000000 && results.value >= 10000000) {   
+          Buttons[gekoppeld] = results.value;                         
+          Serial.print("knop ");
+          Serial.print(gekoppeld);
+          Serial.print(" gekoppeld met code: ");
+          Serial.println(results.value);
+          led = (led == LOW) ? HIGH : LOW;
+          digitalWrite(3, led);                                       
+          gekoppeld++;                                                
+        }
+      } else if(currentLed == 0) {                                    
+        for(int i = 1; i < 5; i++) {                                  
+          if((results.value) == (Buttons[i])) {                       
+            currentLed = i;                                           
+          }
+        }
+      } else {
+        digitalWrite(3, HIGH);                                        
+        for(int i = 0; i < 10; i++) {                                 
+          if((results.value) == (Buttons[i])) {                       
+            a(i);                                                     
+          }
+        }
+      }
+    }
+  }
+  for(int i : ledPins) {
+    i = i-4;
+    if(millis() - lastTimes[i] >= knipperTimes[i] && knipperTimes[i] != 0) {
+      lastTimes[i] = millis();
+      ledStatus[i] = (ledStatus[i] == LOW) ? HIGH : LOW;
+      digitalWrite(ledPins[i], ledStatus[i]);                         
+    } else if(knipperTimes[i] == 0) {
+      digitalWrite(ledPins[i], LOW);                                  
+    }
+  }
+}
+
+void a(int mode) {
+  if(mode == 0) {
+    knippert = 0;
+    for(int i : knipperTimes) {
+      if(i != 0) {
+        knippert++;                                                   
+      }
+    }
+  }
+  if(mode != 0 || knippert > 2) {
+    knipperTimes[currentLed-1] = mode * 100;                          
+    currentLed = 0;                                                   
+    digitalWrite(3, LOW);                                             
+  }
+}
