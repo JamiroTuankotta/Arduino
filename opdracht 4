@@ -1,1 +1,25 @@
+//pin instellen voor sensor
+#define sensorPin A0
 
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  // de temperatuur sensor lezen
+  int reading = analogRead(sensorPin);
+
+  // naar volt overzetten
+  float voltage = reading * (5000 / 1024.0);
+
+  // veranderen naar graden celcius
+  float temperature = voltage / 10;
+
+  // de temperatuur laten zien op de seriële monitor
+  Serial.print("De temperatuur is: ");
+  Serial.print(temperature);
+  Serial.print(" \xC2\xB0"); // het graden symbool
+  Serial.println("C");
+
+  delay(1000); // pauze tussen de meting
+}
