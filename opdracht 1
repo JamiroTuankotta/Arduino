@@ -1,1 +1,44 @@
+//De pinnen instellen
+void setup() {
+  for(int pin=5; pin<12; pin++){
+    pinMode(pin, OUTPUT);
+  }
+}
+// Het blijft doorgaan
+void loop() {
+  
+  int t = 20;
+  
+  // van de laagste naar de hoogste lampje 
+for (int i = 5; i< 12; i++) {
 
+	//lampje aan doen
+    digitalWrite(i, HIGH);
+    delay(t);
+    digitalWrite(i+1, HIGH);
+    delay(t);
+    digitalWrite(i+2, HIGH);
+    delay(t);
+  	//lampje uit doen
+    digitalWrite(i, LOW);
+  	delay(t);
+    digitalWrite(i+1, LOW);
+  }
+
+	// Nu andere kant van de hoogste naar de laagste lampje 
+  for (int i = 12; i>= 5; i--) {
+
+    //lampje aan doen
+    digitalWrite(i, HIGH);
+    delay(t);
+    digitalWrite(i-1, HIGH);
+    delay(t);
+    digitalWrite(i-2, HIGH);
+    delay(t);
+    //lampje uit doen
+    digitalWrite(i, LOW);
+  	delay(t);
+    digitalWrite(i-1, LOW);
+            
+  }
+}
