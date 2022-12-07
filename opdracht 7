@@ -1,1 +1,48 @@
+//servo en ultrasoon pin 
+#include <Servo.h>
+#define trigPin 9
+#define echoPin 8
+Servo servo;
+int sound = 250;
 
+//instellen van ultrasoon en servo
+void setup() {
+Serial.begin (9600);
+pinMode(trigPin, OUTPUT);
+pinMode(echoPin, INPUT);
+servo.attach(7);
+}
+
+void loop() {
+long duration, distance;
+digitalWrite(trigPin, LOW);
+delayMicroseconds(2);
+digitalWrite(trigPin, HIGH);
+delayMicroseconds(10);
+digitalWrite(trigPin, LOW);
+duration = pulseIn(echoPin, HIGH);
+//afstand berekenen met ultrasoon
+distance = (duration/2) / 29.1;
+//sensor afstand kleiner dan 10
+if (distance < 10) {
+//waardes latenzien in monitor
+Serial.println("de afstand is minder dan 10");
+servo.write(180);
+//pauze
+delay(1500);
+}
+else {
+servo.write(0);
+}
+//sensor afstand groter dan 60
+if (distance > 60 || distance <= 0){
+//waardes latenzien in monitor
+Serial.println("de afstand is meer dan 60");
+}
+else {
+Serial.print(distance);
+Serial.println(" cm");
+}
+//pauze
+delay(500);
+}
