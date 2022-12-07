@@ -1,1 +1,86 @@
+#include <Servo.h>
+//pinnen voor servo en button
+Servo servo;
+int pos = 0;
+int switchState = LOW;
+int switch1 = 7;
+int switch2 = 8;
+
+// button en servo instellen
+void setup() {
+    servo.attach(9);
+    pinMode(switch1, INPUT);
+    pinMode(switch2, INPUT);
+    Serial.begin(9600);
+    servo.write(0);
+}
+
+//Als butten 1 word ingedrukt zal de servo gaan draaien in 1 sec naar 120 graden
+void loop() {
+    if (digitalRead(switch1) == HIGH) {
+        if (checkButtonBoth()) { buttonBoth(); }
+        else {
+            button1();
+        }
+    } else {
+    //als butten 2 word ingedrukt zal de servo gaan draaien in 0,5 sec naar 120 graden
+        if (digitalRead(switch2) == HIGH) {
+            if (checkButtonBoth()) { buttonBoth(); }
+            else {
+                button2();
+            }
+        }
+    }
+}
+// indrukken van beide buttons
+bool checkButtonBoth() {
+    delay(50);
+    if (digitalRead(switch2) == HIGH && digitalRead(switch1) == HIGH) {
+        return true;
+    }
+    return false;
+}
+
+
+void turn(int start, int end, int time) {
+    if (start < end) turntowards(start, end, time);
+    if (start > end) turnback(start, end, time);
+}
+
+void turntowards(int start, int end, int time) {
+    for (pos = start; pos <= end; pos += 1) {
+        servo.write(pos);
+        delay(time);
+    }
+}
+
+void turnback(int start, int end, int time) {
+    for (pos = start; pos >= end; pos -= 1) {
+        servo.write(pos);
+        delay(time);
+    }
+}
+//indrukken button 1
+void button1() {
+  //de servo meter zal in 1sec van 0 naar 120 graden gaan en terug
+    turn(0, 120, (1000 / 120));
+    turn(120, 0, (1000 / 120));
+}
+
+//indrukken butten 2
+void button2() {
+  //de servo meter zal in 0,5 sec van 0 naar 120 graden gaan en terug
+    turn(0, 120, (500 / 120));
+    turn(120, 0, (500 / 120));
+}
+
+//indrukken van beide buttons
+void buttonBoth() {
+  //de servo meter zal in 1sec van 0 naar 120 graden gaan 
+    turn(0, 120, (1000 / 120));
+  // pauze van 2 sec
+    delay(2000);
+  //de servo meter zal terug gaan in 1sec van 120 naar 0 graden gaan 
+    turn(120, 0, (1000 / 120));
+};
 
