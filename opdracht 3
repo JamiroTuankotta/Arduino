@@ -1,1 +1,117 @@
+//pinnen kiezen voor led en potmeter
+int sensorValue = 0;
+int led1=3,led2=4,led3=5,led4=6, led5=7, led6=8, led7=9;
 
+//led lampjes instellen
+void setup() 
+{
+  pinMode(led1,OUTPUT);
+  pinMode(led2,OUTPUT);
+  pinMode(led3,OUTPUT);
+  pinMode(led4,OUTPUT);
+  pinMode(led5,OUTPUT);
+  pinMode(led6,OUTPUT);
+  pinMode(led7,OUTPUT);
+
+}
+
+void loop() 
+{
+  sensorValue=analogRead(A5);
+  sensorValue=map(sensorValue,0,1023,0,7);
+	
+  //pauze
+  delay(100);
+  
+  //hoe verder er gedraaid wordt, hoe meer lampjes er aan gaan
+
+  if (sensorValue==0){
+    //hier staan alle lampjes uit op LOW
+    digitalWrite(led1,LOW);
+    digitalWrite(led2,LOW);
+    digitalWrite(led3,LOW);
+    digitalWrite(led4,LOW);
+    digitalWrite(led5,LOW);
+    digitalWrite(led6,LOW);
+    digitalWrite(led7,LOW);
+  }
+
+  if (sensorValue==1){
+    //lampje 1 staat aan 
+    digitalWrite(led1,HIGH);
+    digitalWrite(led2,LOW);
+    digitalWrite(led3,LOW);
+    digitalWrite(led4,LOW);
+    digitalWrite(led5,LOW);
+    digitalWrite(led6,LOW);
+    digitalWrite(led7,LOW);
+  }
+
+  if (sensorValue==2){
+	//lampje 1 en 2 staan aan
+    digitalWrite(led1,HIGH);
+    digitalWrite(led2,HIGH);
+    digitalWrite(led3,LOW);
+    digitalWrite(led4,LOW);
+    digitalWrite(led5,LOW);
+    digitalWrite(led6,LOW);
+    digitalWrite(led7,LOW);
+
+  }
+
+  if (sensorValue==3){
+	//lampjes 1 tm 3 staan aan
+    digitalWrite(led1,HIGH);
+    digitalWrite(led2,HIGH);
+    digitalWrite(led3,HIGH);
+    digitalWrite(led4,LOW);
+    digitalWrite(led5,LOW);
+    digitalWrite(led6,LOW);
+    digitalWrite(led7,LOW);
+  }
+  
+  if (sensorValue==4){
+	//lampje 1 t/m 4 staan aan
+    digitalWrite(led1,HIGH);
+    digitalWrite(led2,HIGH);
+    digitalWrite(led3,HIGH);
+    digitalWrite(led4,HIGH);
+    digitalWrite(led5,LOW);
+    digitalWrite(led6,LOW);
+    digitalWrite(led7,LOW);
+  }
+  
+    if (sensorValue==5){
+	//lampje 1 t/m 5 staan aan
+    digitalWrite(led1,HIGH);
+    digitalWrite(led2,HIGH);
+    digitalWrite(led3,HIGH);
+    digitalWrite(led4,HIGH);
+    digitalWrite(led5,HIGH);
+    digitalWrite(led6,LOW);
+    digitalWrite(led7,LOW);
+  }
+  
+      if (sensorValue==6){
+	//lampje 1 t/m6 staan aan 
+    digitalWrite(led1,HIGH);
+    digitalWrite(led2,HIGH);
+    digitalWrite(led3,HIGH);
+    digitalWrite(led4,HIGH);
+    digitalWrite(led5,HIGH);
+    digitalWrite(led6,HIGH);
+    digitalWrite(led7,LOW);
+  }
+  
+  	  if (sensorValue==7){
+	//Alle lampjes staan aan 		  
+    digitalWrite(led1,HIGH);
+    digitalWrite(led2,HIGH);
+    digitalWrite(led3,HIGH);
+    digitalWrite(led4,HIGH);
+    digitalWrite(led5,HIGH);
+    digitalWrite(led6,HIGH);
+    digitalWrite(led7,HIGH);
+  }
+  
+}
