@@ -1,1 +1,35 @@
+//pinnen die gebruikt zijn
+int rled= 11;
+int gled= 10;
+int bled= 9;
 
+
+void setup()
+{
+  //pinmode instellen
+  pinMode(rled, OUTPUT);
+  pinMode(gled, OUTPUT);
+  pinMode(bled,OUTPUT);
+}
+
+void loop()
+{
+  //rode waarde van 0 tot 255
+for(int red=0; red<255; red++)
+{
+  //groene waarde van 0 tot 255
+  for( int green=0; green<255; green++)
+  {
+    //blauwe waarde van 0 tot 255
+    for( int blue=0; blue<255; blue++)
+    {
+      //Waarde naar de led 
+      analogWrite(rled,red);
+      analogWrite(gled,green);
+      analogWrite(bled,blue);
+      delay(1);
+    }
+  }
+}
+  
+}
