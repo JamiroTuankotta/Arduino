@@ -9,8 +9,8 @@ int knippert = 2;
 int gekoppeld = 0;
 //buttons instellen afstandbediening
 long Buttons[] = {16738455, 16724175, 16718055, 16743045, 16716015, 16726215, 16734885, 16734885, 16730805, 16732845};
-int num_0 = 0xFF6897;
-#define  NUM1 0xFF30CF
+int num_0 = 0xFD08F7;
+#define  NUM1 0xFD8877
 
 unsigned long lastTimes[] = {0, 0, 0, 0};
 
@@ -30,22 +30,28 @@ void setup()
 }
 
 void loop(){
+//millies
   if(millis() - lastTime >= 100) {                                    
-    lastTime = millis();                                              
+    lastTime = millis(); 
+    //De afstandbediening lezen
     if(irrecv.decode(&results)) {                                     
-      irrecv.resume();                                                
+      irrecv.resume();  
+      //kijken of afstandbediening is gekoppeld
       if(gekoppeld < 10) {                                            
         Serial.println(results.value);                                
         if(results.value <=20000000 && results.value >= 10000000) {   
-          Buttons[gekoppeld] = results.value;                         
-          Serial.print("knop ");
-          Serial.print(gekoppeld);
-          Serial.print(" gekoppeld met code: ");
+        //De button op de afstandbediening koppelen
+          Buttons[gekoppeld] = results.value;   
+          //waardes latenzien op monitor
+          Serial.print("Button");
+          Serial.print(Connected);
+          Serial.print(" Connected code: ");
           Serial.println(results.value);
           led = (led == LOW) ? HIGH : LOW;
           digitalWrite(3, led);                                       
           gekoppeld++;                                                
         }
+        //kijken of er een led gekkoppeld is en overeenkomt met de knop voor de led
       } else if(currentLed == 0) {                                    
         for(int i = 1; i < 5; i++) {                                  
           if((results.value) == (Buttons[i])) {                       
@@ -54,7 +60,8 @@ void loop(){
         }
       } else {
         digitalWrite(3, HIGH);                                        
-        for(int i = 0; i < 10; i++) {                                 
+        for(int i = 0; i < 10; i++) {    
+        //knippersnelheid van de led aanpassen
           if((results.value) == (Buttons[i])) {                       
             a(i);                                                     
           }
@@ -64,11 +71,14 @@ void loop(){
   }
   for(int i : ledPins) {
     i = i-4;
+    //millies
     if(millis() - lastTimes[i] >= knipperTimes[i] && knipperTimes[i] != 0) {
       lastTimes[i] = millis();
       ledStatus[i] = (ledStatus[i] == LOW) ? HIGH : LOW;
+      //De knippersnelheid aanpassen naar gekozen knippersnelheid
       digitalWrite(ledPins[i], ledStatus[i]);                         
     } else if(knipperTimes[i] == 0) {
+    //led uitzetten
       digitalWrite(ledPins[i], LOW);                                  
     }
   }
@@ -83,6 +93,7 @@ void a(int mode) {
       }
     }
   }
+  //knippersnelheid led veranderen
   if(mode != 0 || knippert > 2) {
     knipperTimes[currentLed-1] = mode * 100;                          
     currentLed = 0;                                                   
