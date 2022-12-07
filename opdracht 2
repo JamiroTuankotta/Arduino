@@ -1,1 +1,29 @@
+//led en button pin instellen 
+#define LED_PIN 11
+#define BUTTON_PIN 8
+byte lastButtonState = LOW;
+byte ledState = LOW;
+//millies
+unsigned long debounceDuration = 50; 
+unsigned long lastTimeButtonStateChanged = 0;
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(BUTTON_PIN, INPUT);
+}
 
+
+void loop() {
+  if (millis() - lastTimeButtonStateChanged > debounceDuration) {
+    byte buttonState = digitalRead(BUTTON_PIN);
+    if (buttonState != lastButtonState) {
+      lastTimeButtonStateChanged = millis();
+      
+      //bij indrukken en loslaten van de knop gaat het lampje aan 
+      lastButtonState = buttonState;
+      if (buttonState == LOW) {
+        ledState = (ledState == HIGH) ? LOW: HIGH;
+        digitalWrite(LED_PIN, ledState);
+      }
+    }
+  }
+}
