@@ -1,1 +1,139 @@
+int state;
+int flag = 0;
 
+//pin instellen voor de led
+const int ledPins[] = {8, 9, 10};
+
+//De tijd voor rood en groen, 8 en 15 sec
+int t[] = {8000, 15000};
+
+//De laatste keer dat de lamp is aangegaan
+unsigned long lastTimes[] = {0, 0, 0};
+
+//tijdduur van de led
+int ledTiming[] = {0, 0, 0};
+
+int ledHistory[] = {0, 0, 0};
+
+//Status van de led
+int ledStatus[] = {LOW, LOW, LOW};
+
+//-1 er gebeurd niks (oranje blijft knipperen)
+int docycle = -1;
+
+//Ledpins op output
+void setup() {
+    Serial.begin(9600);
+    
+    for (int pin: ledPins) {
+        
+        pinMode(pin, OUTPUT);
+    }
+}
+
+void loop() {
+    //Voor elke lamp
+    for (int op = 0; op < 3; op++) {
+        
+        roll(op);
+    }
+
+    //Bij het maken met de connectie met bluetooth 
+    if (Serial.available() > 0) {
+      
+      receivedData = serial.read();
+      
+      if (receivedData == 48{
+        
+        //er gebeurd niks waarde is -1
+        if(docycle < 0){
+          cycle();
+        }
+        flag = 0;
+      }  
+}
+
+bool randomBool() {
+    if ((rand() % 2) + 1 == 2)return 1;
+    return 0;
+}
+void cycle() {
+    //De tijd van de led = 8000
+    ledTiming[0] = t[randomBool()];
+    //De tijd van de led = 15000
+    ledTiming[2] = t[randomBool()];
+
+    //Het oranje licht 3 sec geven
+    ledTiming[1] = 3000;
+
+    //Alle waardes van de geschiedenis resetten omdat we een nieuwe cycle beginnen
+    ledHistory[0] = 0;
+    ledHistory[1] = 0;
+    ledHistory[2] = 0;
+    lastTimes[0] = 0;
+    lastTimes[1] = 0;
+    lastTimes[2] = 0;
+    ledStatus[0] = 0;
+    ledStatus[1] = 0;
+    ledStatus[2] = 0;
+
+    //De leds uitzetten met waarde 0
+    digitalWrite(ledPins[0], 0);
+    digitalWrite(ledPins[1], 0);
+    digitalWrite(ledPins[2], 0);
+
+    //beginnen met 
+    docycle = 0;
+}
+
+void update() {
+    //De waarde naar -1 zodat er een nieuwe cycle kan beginne
+    if(docycle > 2){
+        docycle = -1;
+        ledHistory[2] = 0;
+    }
+    if (docycle == -1) {
+        //de waarde is -1 gebeurd niet en de oranje lamp zal 1 secknipperen
+        ledTiming[1] = 1000;
+        //Bij het aangaan van de volgende led zal de vorige uit gaan
+        ledHistory[1] = 1;
+    }
+    if (docycle == 0) {
+        //De led gaat van oranje naar groen
+        ledHistory[1] = 0;
+        //groene led aan
+        ledHistory[0] = 1;
+    }
+    if (docycle == 1) {
+        //de led gaat van groen naar oranje
+        ledHistory[0] = 0;
+        //oranje led aan
+        ledHistory[1] = 1;
+    }
+    if (docycle == 2) {
+        //de led gaat van oranje naar rood
+        ledHistory[1] = 0;
+        //rode led aan
+        ledHistory[2] = 1;
+    }
+}
+
+
+void roll(int l) {
+
+    update();
+  
+	//millies
+    unsigned long curTime = millis();
+
+    if (curTime - lastTimes[l] >= ledTiming[l] && ledHistory[l] >= 1) {
+        lastTimes[l] = curTime;
+      
+        //Led status aan of uit
+        ledStatus[l] = (ledStatus[l] == LOW) ? HIGH : LOW;
+        if (ledStatus[l] == 0 && docycle >= 0) {
+            docycle++;
+        }
+        digitalWrite(ledPins[l], ledStatus[l]);
+    }
+}
